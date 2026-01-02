@@ -1,7 +1,5 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-
-//TODO Alttaki 2 kısma bak
 using System.ComponentModel.DataAnnotations; // [Required] hatasını çözer
 using System.Text.Json.Serialization;       // [JsonIgnore] ve JsonIgnoreCondition hatasını çözer
 
@@ -43,9 +41,6 @@ public class Book
         
         public string CategoryID { get; set; } = string.Empty; //null! dene olmazsa
 
-        // --- Frontend/API Görüntüleme Alanları (Veritabanında Yok) ---
-        // MongoDB'ye kaydetme/okuma sırasında bu alanı yok sayar.
-        
         /*
         CategoryName alanı bizim veritabanımızdaki Books koleksiyonunda fiziksel olarak bulunmuyor. Bu alanı sadece API seviyesinde geçici bir taşıyıcı olarak kullanıyoruz.
         Buradaki [BsonIgnore] etiketi, MongoDB'ye bu alanı veritabanına kaydetmemesini söyler
@@ -53,5 +48,5 @@ public class Book
         [BsonIgnore] 
         // JSON çıktısında CategoryName null ise göstermez (temiz çıktı).
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string? CategoryName { get; set; } //Neden optional?
+        public string? CategoryName { get; set; }
     }

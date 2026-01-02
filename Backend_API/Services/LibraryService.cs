@@ -12,20 +12,18 @@ public class LibraryService
     // Constructor: Dependency Injection ile ayarları alır ve koleksiyonları başlatır.
     public LibraryService(IOptions<LibraryDatabaseSettings> settings)
     {
-        // Settings nesnesi artık doğru namespace'ten geliyor.
-        //appsettings.json dan geliyor bilgiler
-        var client = new MongoClient(settings.Value.ConnectionString); //MongoDB sunucusuna giden fiziksel yolu (bağlantı dizesini) kullanarak bir "istemci" oluşturur.
-        var db = client.GetDatabase(settings.Value.DatabaseName); //Bağlantı kurulan sunucu içerisinden çalışacağınız spesifik veritabanını seçer. 
+        var client = new MongoClient(settings.Value.ConnectionString);
+        var db = client.GetDatabase(settings.Value.DatabaseName); 
         
         booksCollection = db.GetCollection<Book>(settings.Value.BooksCollectionName); //Veritabanı içindeki Books tablosuna (koleksiyonuna) erişir ve bu tablodaki her bir dokümanın C# tarafındaki Book modeliyle eşleşeceğini belirtir.
-        categoriesCollection = db.GetCollection<Category>(settings.Value.CategoriesCollectionName); //Tıpkı kitaplar gibi, Categories tablosuna erişir ve verileri Category modeline bağlar.
+        categoriesCollection = db.GetCollection<Category>(settings.Value.CategoriesCollectionName); 
     }
 
     // =================================================================
-    // KİTAP OPERASYONLARI (CRUD ve Arama)
+    // CRUD ve Arama
     // =================================================================
 
-    // GET: Tüm kitapları getirir VEYSA arama terimine göre filtreler (Home Screen)
+    // GET: Tüm kitapları getirir VEYA arama terimine göre filtreler (Home Screen)
     public async Task<List<Book>> GetBooksAsync(string? searchTerm = null) //Parameters can be empty
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
@@ -44,15 +42,14 @@ public class LibraryService
     {
         var book = await booksCollection.Find(x => x.Id == id).FirstOrDefaultAsync(); //Books koleksiyonunda, gönderilen id ile eşleşen ilk kitabı arar.
 
-        if (book != null && !string.IsNullOrWhiteSpace(book.CategoryID)) // If book has found
+        if (book != null && !string.IsNullOrWhiteSpace(book.CategoryID)) // Kitap bulunduysa
         {
             // İlişkili Kategori verisini çek (Lookup / Join operasyonu)
             var category = await categoriesCollection
                 .Find(c => c.Id == book.CategoryID) //Kitabın içindeki CategoryID değerini alır ve bu kez Categories koleksiyonuna giderek bu ID'ye sahip olan kategoriyi arar.
                 .FirstOrDefaultAsync();
             
-            // Kitap nesnesine Kategori Adını ekle (Frontend için)
-            book.CategoryName = category?.Name; //kategorinin ismini (Örn: "Bilim Kurgu"), kitabın içindeki geçici CategoryName alanına yazar.
+            book.CategoryName = category?.Name; //kategorinin ismini kitabın içindeki geçici CategoryName alanına yazar.
         }
 
         return book;
@@ -71,7 +68,6 @@ public class LibraryService
     //     await booksCollection.DeleteOneAsync(x => x.Id == id);
     public async Task RemoveAsync(string id)
     {
-        // ID'nin başındaki veya sonundaki olası boşlukları C# tarafında da temizleyelim
         var cleanId = id.Trim();
         await booksCollection.DeleteOneAsync(x => x.Id == cleanId);
     }
@@ -86,7 +82,6 @@ public class LibraryService
 
     public async Task<Category?> GetCategoryAsync(string id)
     {
-        // ID içindeki olası boşlukları temizleyerek güvenli arama yapıyoruz
         var cleanId = id.Trim();
         
         // MongoDB'deki 'Categories' koleksiyonunda bu ID'yi ara ve bulduğun ilk sonucu getir
@@ -95,6 +90,7 @@ public class LibraryService
             .FirstOrDefaultAsync();
     }
 
+<<<<<<< HEAD
     // Yeni Kategori Oluştur
     public async Task CreateCategoryAsync(Category newCategory) =>
         await categoriesCollection.InsertOneAsync(newCategory);
@@ -110,3 +106,6 @@ public class LibraryService
         
 
 }
+=======
+}
+>>>>>>> 6ee25087a6d2802a7a096e0415463681765464b7

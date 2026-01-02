@@ -1,6 +1,5 @@
-namespace LibraryAPI.Models; //TODO BAK! LibraryAPI.Settings olabilir.
+namespace LibraryAPI.Models;
 
-//TODO: Hata çıkarsa null! yaz karşılarına
 public class LibraryDatabaseSettings
 {
     public string ConnectionString { get; set; } = string.Empty;

@@ -9,7 +9,7 @@ Frontend: SwiftUI (iOS) - MVVM Architecture
 
 Backend: .NET 8 / C# Web API
 
-Database: MongoDB (Atlas)
+Database: MongoDB
 
 Communication: RESTful API with JSON
 

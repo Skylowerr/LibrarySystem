@@ -84,9 +84,6 @@ public class LibraryService
     public async Task<List<Category>> GetCategoriesAsync() =>
         await categoriesCollection.Find(item => true).ToListAsync();
 
-    // LibraryService.cs dosyasında, GetCategoryAsync metodunu bulun ve değiştirin:
-
-//Bu kısım, kitabın detay sayfasındaki o boş "Kategori Adı" alanını veritabanından gelen gerçek verilerle doldurmaya yarayan köprüdür. Bu köprüyü kurmazsan iki koleksiyon arasındaki bağ kopuk kalır.
     public async Task<Category?> GetCategoryAsync(string id)
     {
         // ID içindeki olası boşlukları temizleyerek güvenli arama yapıyoruz
@@ -97,5 +94,19 @@ public class LibraryService
             .Find(x => x.Id == cleanId)
             .FirstOrDefaultAsync();
     }
+
+    // Yeni Kategori Oluştur
+    public async Task CreateCategoryAsync(Category newCategory) =>
+        await categoriesCollection.InsertOneAsync(newCategory);
+
+    // Kategori Güncelle
+    public async Task UpdateCategoryAsync(string id, Category updatedCategory) =>
+        await categoriesCollection.ReplaceOneAsync(x => x.Id == id, updatedCategory);
+
+    // Kategori Sil
+    public async Task RemoveCategoryAsync(string id) =>
+        await categoriesCollection.DeleteOneAsync(x => x.Id == id);
+
+        
 
 }

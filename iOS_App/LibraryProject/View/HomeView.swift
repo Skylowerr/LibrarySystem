@@ -67,14 +67,26 @@ struct HomeView: View {
             }
             // MARK: - Toolbar
             .toolbar {
+                // Kategori Listesine Giden Buton (Sol Taraf)
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { isShowingNewBookSheet = true }) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(.blue)
+                    HStack {
+                        //TODO: New
+                        NavigationLink(destination: CategoryListView()) {
+                            Image(systemName: "tag.circle")
+                                .font(.title2)
+                                .foregroundColor(.orange) // Kitap eklemeden ayırt edilsin diye turuncu yaptık
+                        }
+                        
+                        // MEVCUT KİTAP EKLEME BUTONU
+                        Button(action: { isShowingNewBookSheet = true }) {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.title2)
+                                .foregroundColor(.blue)
+                        }
                     }
                 }
             }
+            
             // MARK: - Add New Book (Sheet)
             .sheet(isPresented: $isShowingNewBookSheet) {
                 DetailView(viewModel: DetailViewModel(

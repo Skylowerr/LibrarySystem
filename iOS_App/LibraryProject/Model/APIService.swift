@@ -12,7 +12,7 @@ enum APIError: Error {
 }
 
 class APIService: ObservableObject {
-    
+    static let shared = APIService()
     private let baseURL = "https://vigilant-space-trout-j7gj7ggpvqwfp574-5075.app.github.dev/api"
     //Bu URL'nin sonuna ekleyerek gidecegiz
     
@@ -22,35 +22,13 @@ class APIService: ObservableObject {
         decoder.keyDecodingStrategy = .useDefaultKeys
         return try decoder.decode(type, from: data)
     }
-    
-    // =========================================================
-    // GET (Listeleme ve Arama)
-    // =========================================================
-    
-    //Ana ekrandaki kitap listesini getirir.Eğer arama kutusuna bir şey yazılırsa, URL'nin sonuna ?searchTerm=... ekleyerek C# tarafındaki Text Index aramasını tetikler.
-    func fetchBooks(searchTerm: String = "") async throws -> [Book] {
-        var urlString = "\(baseURL)/books"
-        
-        if !searchTerm.isEmpty {
-            let encodedTerm = searchTerm.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-            urlString += "?searchTerm=\(encodedTerm)"
-        }
-        
-        guard let url = URL(string: urlString) else { throw APIError.invalidURL }
-        
-        let (data, _) = try await URLSession.shared.data(from: url)
-        return try decode(data: data, type: [Book].self)
-    }
-    
+            
+    //MARK: CATEGORIES
     func fetchCategories() async throws -> [Category] {
         guard let url = URL(string: "\(baseURL)/categories") else { throw APIError.invalidURL }
         let (data, _) = try await URLSession.shared.data(from: url)
         return try decode(data: data, type: [Category].self)
     }
-    
-    // =========================================================
-    // GET Kategori ID ile
-    // =========================================================
     func fetchCategory(id: String) async throws -> Category {
         let cleanID = id.trimmingCharacters(in: .whitespacesAndNewlines)
         // ID boşsa hiç istek atma, direkt hata fırlat
@@ -76,9 +54,73 @@ class APIService: ObservableObject {
         return try JSONDecoder().decode(Category.self, from: data)
     }
     
-    // =========================================================
-    // CRUD Metotları
-    // =========================================================
+    func addCategory(category: Category) async throws -> Bool {
+        guard let url = URL(string: "\(baseURL)/categories") else { return false }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONEncoder().encode(category)
+        
+        let (_, response) = try await URLSession.shared.data(for: request)
+        return (response as? HTTPURLResponse)?.statusCode == 201 || (response as? HTTPURLResponse)?.statusCode == 200
+    }
+    
+    // Kategori Silme (DELETE)
+    func deleteCategory(id: String) async throws {
+        // URL yapısının sonuna kategorinin ID'sini ekliyoruz
+        guard let url = URL(string: "\(baseURL)/categories/\(id)") else {
+            throw APIError.invalidURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        // İsteği gönderiyoruz
+        let (_, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              (httpResponse.statusCode == 200 || httpResponse.statusCode == 204) else {
+            throw URLError(.badServerResponse)
+        }
+    }
+    
+    // Kategori Güncelleme (PUT)
+    func updateCategory(category: Category) async throws {
+        guard let id = category.id,
+              let url = URL(string: "\(baseURL)/categories/\(id)") else {
+            throw APIError.invalidURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Kategoriyi JSON formatına çevirip body'e ekliyoruz
+        request.httpBody = try JSONEncoder().encode(category)
+        
+        let (_, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+    }
+    
+    //MARK: BOOKS
+    //Ana ekrandaki kitap listesini getirir.Eğer arama kutusuna bir şey yazılırsa, URL'nin sonuna ?searchTerm=... ekleyerek C# tarafındaki Text Index aramasını tetikler.
+    func fetchBooks(searchTerm: String = "") async throws -> [Book] {
+        var urlString = "\(baseURL)/books"
+        
+        if !searchTerm.isEmpty {
+            let encodedTerm = searchTerm.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+            urlString += "?searchTerm=\(encodedTerm)"
+        }
+        
+        guard let url = URL(string: urlString) else { throw APIError.invalidURL }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try decode(data: data, type: [Book].self)
+    }
     
     func createBook(book: Book) async throws {
         guard let url = URL(string: "\(baseURL)/books") else { throw APIError.invalidURL }

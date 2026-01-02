@@ -92,6 +92,37 @@ public static class LibraryEndpoints
             
             return Results.Ok(category);
         });
+
+
+        // KATEGORILER
+        categoriesGroup.MapPost("/", async (LibraryService service, Category newCategory) =>
+        {
+            await service.CreateCategoryAsync(newCategory);
+            return Results.Created($"{categoriesRoute}/{newCategory.Id}", newCategory);
+        });
+
+        // PUT: Kategori Güncelle
+        categoriesGroup.MapPut("/{id}", async (LibraryService service, string id, Category updatedCategory) =>
+        {
+            var existingCategory = await service.GetCategoryAsync(id);
+            if (existingCategory is null) return Results.NotFound();
+
+            updatedCategory.Id = id; 
+            await service.UpdateCategoryAsync(id, updatedCategory);
+            return Results.NoContent();
+        });
+
+        // DELETE: Kategori Sil
+        categoriesGroup.MapDelete("/{id}", async (LibraryService service, string id) =>
+        {
+            var existingCategory = await service.GetCategoryAsync(id);
+            if (existingCategory is null) return Results.NotFound();
+
+            await service.RemoveCategoryAsync(id);
+            return Results.NoContent();
+        });
+        
+
         return routes;
     }
 }

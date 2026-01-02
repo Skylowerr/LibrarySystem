@@ -138,3 +138,5 @@ class DetailViewModel: ObservableObject {
         return true
     }
 }
+
+

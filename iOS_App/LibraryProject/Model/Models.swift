@@ -5,8 +5,6 @@ struct Category: Codable, Identifiable {
     var id: String?
     var name: String
     var description: String
-    var yearEstablished: Int
-    
 }
 
 // MARK: - Book Model

@@ -2,7 +2,7 @@ Library Management System (Full-Stack)
 This project was developed as a term project for my Mobile Application Development course at University. It aims to demonstrate the integration between a modern iOS frontend and a robust .NET backend with a NoSQL database.
 
 🚀 Project Overview
-The Library Management System is a full-stack application that allows users to manage a book collection. It supports full CRUD (Create, Read, Update, Delete) operations and provides a dynamic, user-friendly mobile experience.
+The Library Management System is a full-stack application that allows users to manage a book collection. It supports full CRUD (Create, Read, Update, Delete) operations and provides a dynamic, user-friendly mobile experience. 
 
 🛠 Tech Stack
 Frontend: SwiftUI (iOS) - MVVM Architecture

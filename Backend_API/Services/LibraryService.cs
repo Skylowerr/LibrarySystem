@@ -90,7 +90,6 @@ public class LibraryService
             .FirstOrDefaultAsync();
     }
 
-<<<<<<< HEAD
     // Yeni Kategori Oluştur
     public async Task CreateCategoryAsync(Category newCategory) =>
         await categoriesCollection.InsertOneAsync(newCategory);
@@ -106,6 +105,5 @@ public class LibraryService
         
 
 }
-=======
 }
->>>>>>> 6ee25087a6d2802a7a096e0415463681765464b7
+

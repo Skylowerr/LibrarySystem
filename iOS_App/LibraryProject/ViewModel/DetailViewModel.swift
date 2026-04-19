@@ -1,8 +1,6 @@
 import Foundation
 import SwiftUI
 
-// @MainActor: Bu sınıf içindeki tüm işlemlerin UI (ana) thread'de
-// güvenli bir şekilde yapılmasını sağlar. Donma hatasını çözer.
 @MainActor
 class DetailViewModel: ObservableObject {
     

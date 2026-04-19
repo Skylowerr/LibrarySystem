@@ -13,7 +13,7 @@ enum APIError: Error {
 
 class APIService: ObservableObject {
     static let shared = APIService()
-    private let baseURL = "https://vigilant-space-trout-j7gj7ggpvqwfp574-5075.app.github.dev/api"
+    private let baseURL = "BASE_URL_HERE"
     //Bu URL'nin sonuna ekleyerek gidecegiz
     
     //Sunucudan gelen karmaşık JSON verisini (Data), Swift modellerine (Book veya Category) dönüştüren genel bir fonksiyondur

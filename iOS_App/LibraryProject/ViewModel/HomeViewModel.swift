@@ -1,10 +1,7 @@
 import Foundation
 
 @MainActor
-class HomeViewModel: ObservableObject {
-    // ObservableObject, View'in bu sınıftaki değişiklikleri takip etmesini sağlar.
-    
-    // MARK: - Published Veriler (View'e yansıyan durumlar)
+class HomeViewModel: ObservableObject {    
     @Published var books: [Book] = []          // Listelenen kitaplar
     @Published var categories: [Category] = []  // Filtreleme için tüm kategoriler
     @Published var searchText: String = ""      // Arama kutusundaki metin

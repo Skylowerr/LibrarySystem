@@ -51,7 +51,8 @@ class APIService: ObservableObject {
             throw APIError.invalidServerResponse
         }
         
-        return try JSONDecoder().decode(Category.self, from: data)
+        return try decode(data: data, type: Category.self)
+
     }
     
     func addCategory(category: Category) async throws -> Bool {
